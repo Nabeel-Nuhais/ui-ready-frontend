@@ -1,5 +1,6 @@
 import { NavLink, useLocation } from "react-router-dom";
 import { LayoutDashboard, Users, Layers, CalendarCheck } from "lucide-react";
+import logo from "@/assets/logo-batch-manager.png";
 import {
   Sidebar,
   SidebarContent,
@@ -30,13 +31,9 @@ export default function AppSidebar() {
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel>
-            <NavLink to="/dashboard" className="flex items-center gap-2">
-              {collapsed ? (
-                <span className="text-sm font-bold tracking-tight">BM</span>
-              ) : (
-                <span className="text-xl font-extrabold tracking-tight">Batch Manager</span>
-              )}
-            </NavLink>
+            <div className="flex items-center gap-2">
+              <img src={logo} alt="Batch Manager logo" className="h-5 w-5" />
+            </div>
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
