@@ -29,12 +29,12 @@ export default function AppSidebar() {
     <Sidebar collapsible="icon">
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>
-            <NavLink to="/dashboard" className="flex items-center gap-2">
+          <SidebarGroupLabel className="h-14 px-3 flex items-center">
+            <NavLink to="/dashboard" className="flex items-center gap-2 w-full">
               {collapsed ? (
-                <span className="text-sm font-bold tracking-tight">BM</span>
+                <span className="text-base font-extrabold tracking-tight">BM</span>
               ) : (
-                <span className="text-xl font-extrabold tracking-tight">Batch Manager</span>
+                <span className="text-2xl font-extrabold tracking-tight leading-none">Batch Manager</span>
               )}
             </NavLink>
           </SidebarGroupLabel>
@@ -42,7 +42,7 @@ export default function AppSidebar() {
             <SidebarMenu>
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild isActive={currentPath === item.url} tooltip={item.title}>
+                  <SidebarMenuButton asChild isActive={currentPath === item.url} tooltip={item.title} className="h-10 px-3">
                     <NavLink to={item.url} end className="flex items-center">
                       <item.icon className="mr-2 h-4 w-4" />
                       {!collapsed && <span>{item.title}</span>}
