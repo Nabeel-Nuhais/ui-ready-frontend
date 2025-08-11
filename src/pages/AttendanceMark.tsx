@@ -1,13 +1,17 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
 import AppLayout from "@/components/layout/AppLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
 import { useBatches } from "@/hooks/use-batches";
 import { useStudents } from "@/hooks/use-students";
 import { useAttendance } from "@/hooks/use-attendance";
@@ -25,17 +29,17 @@ const AttendanceMark: React.FC = () => {
   const { getByBatchAndDate, save } = useAttendance();
 
   const [batchId, setBatchId] = useState(initialBatchId);
-  const [date, setDate] = useState(initialDate);
+  const [date, setDate] = useState<Date | undefined>(initialDate ? new Date(initialDate) : undefined);
+  const dateStr = useMemo(() => (date ? format(date, "yyyy-MM-dd") : ""), [date]);
 
   const batchOptions = useMemo(() => batches.map((b) => ({ id: b.id, name: b.name })), [batches]);
   const batchStudents = useMemo(() => students.filter((s) => s.batchId === batchId), [students, batchId]);
 
   const [presence, setPresence] = useState<Record<string, boolean>>({});
 
-  // Initialize presence: prefer existing record, else default all to true
   useEffect(() => {
-    if (!batchId || !date) return;
-    const existing = getByBatchAndDate(batchId, date);
+    if (!batchId || !dateStr) return;
+    const existing = getByBatchAndDate(batchId, dateStr);
     if (existing) {
       const map: Record<string, boolean> = {};
       existing.entries.forEach((e) => { map[e.studentId] = e.present; });
@@ -45,7 +49,7 @@ const AttendanceMark: React.FC = () => {
       batchStudents.forEach((s) => { all[s.id] = true; });
       setPresence(all);
     }
-  }, [batchId, date, batchStudents, getByBatchAndDate]);
+  }, [batchId, dateStr, batchStudents, getByBatchAndDate]);
 
   const toggle = (id: string, value: boolean) => {
     setPresence((p) => ({ ...p, [id]: value }));
@@ -53,11 +57,11 @@ const AttendanceMark: React.FC = () => {
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!batchId || !date) return;
+    if (!batchId || !dateStr) return;
     const entries = batchStudents.map((s) => ({ studentId: s.id, present: presence[s.id] ?? true }));
-    save(batchId, date, entries);
+    save(batchId, dateStr, entries);
     toast({ title: "Attendance saved", description: `Saved attendance for ${batchStudents.length} students.` });
-    navigate(`/attendance/view?batchId=${batchId}&date=${date}`);
+    navigate(`/attendance/view?batchId=${batchId}&date=${dateStr}`);
   };
 
   return (
@@ -97,7 +101,30 @@ const AttendanceMark: React.FC = () => {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="date">Date</Label>
-                  <Input id="date" type="date" value={date} onChange={(e) => setDate(e.target.value)} required />
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant={"outline"}
+                        className={cn(
+                          "w-[240px] justify-start text-left font-normal",
+                          !date && "text-muted-foreground"
+                        )}
+                      >
+                        <CalendarIcon />
+                        {date ? format(date, "PPP") : <span>Pick a date</span>}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0 bg-popover z-50" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={date}
+                        onSelect={setDate}
+                        disabled={(d) => d > new Date()}
+                        initialFocus
+                        className={cn("p-3 pointer-events-auto")}
+                      />
+                    </PopoverContent>
+                  </Popover>
                 </div>
               </div>
 

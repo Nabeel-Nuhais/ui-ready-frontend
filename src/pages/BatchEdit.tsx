@@ -1,11 +1,16 @@
 import React, { useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
 import AppLayout from "@/components/layout/AppLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
 import { useBatches, type Batch } from "@/hooks/use-batches";
 import { toast } from "@/hooks/use-toast";
 
@@ -23,6 +28,9 @@ const BatchEdit: React.FC = () => {
     startDate: existing?.startDate ?? "",
     endDate: existing?.endDate ?? "",
   });
+
+  const startDateObj = useMemo(() => (form.startDate ? new Date(form.startDate) : undefined), [form.startDate]);
+  const endDateObj = useMemo(() => (form.endDate ? new Date(form.endDate) : undefined), [form.endDate]);
 
   const canonicalUrl = typeof window !== "undefined" ? `${window.location.origin}/batches/edit${id ? `?id=${id}` : ""}` : "/batches/edit";
 
@@ -67,11 +75,55 @@ const BatchEdit: React.FC = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="startDate">Start date</Label>
-                  <Input id="startDate" name="startDate" type="date" value={form.startDate} onChange={onChange} required />
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant={"outline"}
+                        className={cn(
+                          "w-[240px] justify-start text-left font-normal",
+                          !startDateObj && "text-muted-foreground"
+                        )}
+                      >
+                        <CalendarIcon />
+                        {startDateObj ? format(startDateObj, "PPP") : <span>Pick a date</span>}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0 bg-popover z-50" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={startDateObj}
+                        onSelect={(d) => setForm((f) => ({ ...f, startDate: d ? format(d, "yyyy-MM-dd") : "" }))}
+                        initialFocus
+                        className={cn("p-3 pointer-events-auto")}
+                      />
+                    </PopoverContent>
+                  </Popover>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="endDate">End date</Label>
-                  <Input id="endDate" name="endDate" type="date" value={form.endDate} onChange={onChange} required />
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant={"outline"}
+                        className={cn(
+                          "w-[240px] justify-start text-left font-normal",
+                          !endDateObj && "text-muted-foreground"
+                        )}
+                      >
+                        <CalendarIcon />
+                        {endDateObj ? format(endDateObj, "PPP") : <span>Pick a date</span>}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0 bg-popover z-50" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={endDateObj}
+                        onSelect={(d) => setForm((f) => ({ ...f, endDate: d ? format(d, "yyyy-MM-dd") : "" }))}
+                        initialFocus
+                        className={cn("p-3 pointer-events-auto")}
+                      />
+                    </PopoverContent>
+                  </Popover>
                 </div>
               </div>
               <div className="flex items-center gap-3">
