@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
@@ -21,6 +21,26 @@ import AttendanceView from "./pages/AttendanceView";
 
 const queryClient = new QueryClient();
 
+const isAuthed = () => {
+  if (typeof window === "undefined") return false;
+  try {
+    const raw = localStorage.getItem("auth");
+    if (!raw) return false;
+    const { loggedIn } = JSON.parse(raw);
+    return Boolean(loggedIn);
+  } catch {
+    return false;
+  }
+};
+
+const RequireAuth = ({ children }: { children: JSX.Element }) => {
+  return isAuthed() ? children : <Navigate to="/login" replace />;
+};
+
+const HomeRedirect = () => (
+  isAuthed() ? <Navigate to="/dashboard" replace /> : <Navigate to="/login" replace />
+);
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <HelmetProvider>
@@ -29,22 +49,23 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
-<Route path="/" element={<Index />} />
-<Route path="/login" element={<Login />} />
-<Route path="/dashboard" element={<Dashboard />} />
-<Route path="/batches" element={<Batches />} />
-<Route path="/batches/edit" element={<BatchEdit />} />
-<Route path="/students" element={<Students />} />
-<Route path="/students/create" element={<StudentCreate />} />
-<Route path="/students/assign" element={<StudentAssign />} />
-<Route path="/students/edit" element={<StudentEdit />} />
-<Route path="/students/assign-bulk" element={<StudentAssignBulk />} />
-{/* Attendance routes */}
-<Route path="/attendance" element={<Attendance />} />
-<Route path="/attendance/mark" element={<AttendanceMark />} />
-<Route path="/attendance/view" element={<AttendanceView />} />
-{/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-<Route path="*" element={<NotFound />} />
+            <Route path="/" element={<HomeRedirect />} />
+            <Route path="/login" element={<Login />} />
+
+            <Route path="/dashboard" element={<RequireAuth><Dashboard /></RequireAuth>} />
+            <Route path="/batches" element={<RequireAuth><Batches /></RequireAuth>} />
+            <Route path="/batches/edit" element={<RequireAuth><BatchEdit /></RequireAuth>} />
+            <Route path="/students" element={<RequireAuth><Students /></RequireAuth>} />
+            <Route path="/students/create" element={<RequireAuth><StudentCreate /></RequireAuth>} />
+            <Route path="/students/assign" element={<RequireAuth><StudentAssign /></RequireAuth>} />
+            <Route path="/students/edit" element={<RequireAuth><StudentEdit /></RequireAuth>} />
+            <Route path="/students/assign-bulk" element={<RequireAuth><StudentAssignBulk /></RequireAuth>} />
+
+            <Route path="/attendance" element={<RequireAuth><Attendance /></RequireAuth>} />
+            <Route path="/attendance/mark" element={<RequireAuth><AttendanceMark /></RequireAuth>} />
+            <Route path="/attendance/view" element={<RequireAuth><AttendanceView /></RequireAuth>} />
+
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
       </TooltipProvider>
