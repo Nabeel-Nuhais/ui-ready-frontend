@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { format } from "date-fns";
@@ -33,6 +33,12 @@ const [openStart, setOpenStart] = useState(false);
 const [openEnd, setOpenEnd] = useState(false);
   const startDateObj = useMemo(() => (form.startDate ? new Date(form.startDate) : undefined), [form.startDate]);
   const endDateObj = useMemo(() => (form.endDate ? new Date(form.endDate) : undefined), [form.endDate]);
+
+  useEffect(() => {
+    if (isEditing && existing) {
+      setForm({ name: existing.name, startDate: existing.startDate, endDate: existing.endDate });
+    }
+  }, [isEditing, existing]);
 
   const canonicalUrl = typeof window !== "undefined" ? `${window.location.origin}/batches/edit${id ? `?id=${id}` : ""}` : "/batches/edit";
 
