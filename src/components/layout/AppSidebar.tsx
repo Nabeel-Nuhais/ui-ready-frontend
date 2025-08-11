@@ -1,5 +1,6 @@
 import { NavLink, useLocation } from "react-router-dom";
 import { LayoutDashboard, Users, Layers, CalendarCheck } from "lucide-react";
+import logo from "@/assets/logo-batch-manager.png";
 import {
   Sidebar,
   SidebarContent,
@@ -14,8 +15,8 @@ import {
 
 const items = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
-  { title: "Students", url: "/students", icon: Users },
   { title: "Batches", url: "/batches", icon: Layers },
+  { title: "Students", url: "/students", icon: Users },
   { title: "Attendance", url: "/attendance", icon: CalendarCheck },
 ];
 
@@ -29,7 +30,11 @@ export default function AppSidebar() {
     <Sidebar collapsible="icon">
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Menu</SidebarGroupLabel>
+          <SidebarGroupLabel>
+            <div className="flex items-center gap-2">
+              <img src={logo} alt="Batch Manager logo" className="h-5 w-5" />
+            </div>
+          </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (
