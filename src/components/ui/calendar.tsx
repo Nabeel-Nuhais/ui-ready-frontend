@@ -4,8 +4,40 @@ import { DayPicker } from "react-day-picker";
 
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export type CalendarProps = React.ComponentProps<typeof DayPicker>;
+
+function CalendarDropdown({
+  value,
+  onChange,
+  children,
+  name,
+}: any) {
+  const items = React.Children.toArray(children) as React.ReactElement[];
+  const options = items.map((child: any) => ({
+    value: String((child as any).props.value),
+    label: String((child as any).props.children),
+  }));
+  return (
+    <Select
+      value={String(value ?? "")}
+      onValueChange={(val) => onChange?.({ target: { value: val } } as any)}
+    >
+      <SelectTrigger className="h-8 w-[120px]">
+        <SelectValue placeholder={name === "months" ? "Month" : "Year"} />
+      </SelectTrigger>
+      <SelectContent className="z-50 bg-popover">
+        {options.map((o) => (
+          <SelectItem key={o.value} value={o.value}>
+            {o.label}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+  );
+}
+
 
 function Calendar({
   className,
@@ -16,7 +48,7 @@ function Calendar({
   return (
     <DayPicker
       showOutsideDays={showOutsideDays}
-      className={cn("p-3", className)}
+      className={cn("p-3 pointer-events-auto", className)}
       classNames={{
         months: "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0",
         month: "space-y-4",
@@ -54,6 +86,7 @@ function Calendar({
       components={{
         IconLeft: ({ ..._props }) => <ChevronLeft className="h-4 w-4" />,
         IconRight: ({ ..._props }) => <ChevronRight className="h-4 w-4" />,
+        Dropdown: CalendarDropdown,
       }}
       {...props}
     />
