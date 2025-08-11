@@ -101,7 +101,7 @@ const [openEnd, setOpenEnd] = useState(false);
                         mode="single"
                         selected={startDateObj}
                         onSelect={(d) => { setForm((f) => ({ ...f, startDate: d ? format(d, "yyyy-MM-dd") : "" })); setOpenStart(false); }}
-                        fromYear={2000}
+                        fromYear={1990}
                         toYear={new Date().getFullYear() + 5}
                         captionLayout="dropdown"
                         initialFocus
@@ -130,7 +130,7 @@ const [openEnd, setOpenEnd] = useState(false);
                         mode="single"
                         selected={endDateObj}
                         onSelect={(d) => { setForm((f) => ({ ...f, endDate: d ? format(d, "yyyy-MM-dd") : "" })); setOpenEnd(false); }}
-                        fromYear={2000}
+                        fromYear={1990}
                         toYear={new Date().getFullYear() + 5}
                         captionLayout="dropdown"
                         initialFocus

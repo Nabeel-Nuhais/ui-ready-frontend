@@ -87,7 +87,7 @@ const Attendance: React.FC = () => {
                       selected={date}
                       onSelect={(d) => { setDate(d); setOpen(false); }}
                       disabled={(d) => d > new Date()}
-                      fromYear={2000}
+                      fromYear={1990}
                       toYear={new Date().getFullYear()}
                       captionLayout="dropdown"
                       initialFocus

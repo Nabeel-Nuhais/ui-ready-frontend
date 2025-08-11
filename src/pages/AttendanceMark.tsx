@@ -50,7 +50,7 @@ const AttendanceMark: React.FC = () => {
       batchStudents.forEach((s) => { all[s.id] = true; });
       setPresence(all);
     }
-  }, [batchId, dateStr, batchStudents, getByBatchAndDate]);
+  }, [batchId, dateStr, batchStudents]);
 
   const toggle = (id: string, value: boolean) => {
     setPresence((p) => ({ ...p, [id]: value }));

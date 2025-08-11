@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useStudents } from "@/hooks/use-students";
 import { useBatches } from "@/hooks/use-batches";
@@ -19,6 +20,7 @@ const StudentAssignBulk: React.FC = () => {
 
   const [search, setSearch] = useState("");
   const [batchId, setBatchId] = useState("");
+  const [selected, setSelected] = useState<Record<string, boolean>>({});
 
   const unassigned = useMemo(() => students.filter((s) => !s.batchId), [students]);
   const filtered = useMemo(() => {
@@ -31,12 +33,21 @@ const StudentAssignBulk: React.FC = () => {
 
   const batchOptions = useMemo(() => batches.map((b) => ({ id: b.id, name: b.name })), [batches]);
 
+  const allShownSelected = useMemo(() => filtered.length > 0 && filtered.every((s) => selected[s.id]), [filtered, selected]);
+  const selectedCount = useMemo(() => filtered.filter((s) => selected[s.id]).length, [filtered, selected]);
+  const toggleSelectAllShown = (checked: boolean) => {
+    const next = { ...selected };
+    filtered.forEach((s) => { next[s.id] = checked; });
+    setSelected(next);
+  };
+
   const assignAll = (e: React.FormEvent) => {
     e.preventDefault();
     if (!batchId) return;
-    if (unassigned.length === 0) return;
-    unassigned.forEach((s) => assignBatch(s.id, batchId));
-    toast({ title: "Assigned", description: `Assigned ${unassigned.length} students to selected batch.` });
+    const toAssign = unassigned.filter((s) => selected[s.id]).map((s) => s.id);
+    if (toAssign.length === 0) return;
+    toAssign.forEach((id) => assignBatch(id, batchId));
+    toast({ title: "Assigned", description: `Assigned ${toAssign.length} selected students to the batch.` });
     navigate("/students");
   };
 
@@ -80,7 +91,13 @@ const StudentAssignBulk: React.FC = () => {
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <Label>Unassigned students</Label>
-                  <span className="text-sm text-muted-foreground">{filtered.length} shown · {unassigned.length} total</span>
+                  <div className="flex items-center gap-3">
+                    <span className="text-sm text-muted-foreground">{filtered.length} shown · {selectedCount} selected · {unassigned.length} total</span>
+                    <div className="flex items-center gap-2">
+                      <Checkbox id="select-all" checked={allShownSelected} onCheckedChange={(v) => toggleSelectAllShown(Boolean(v))} />
+                      <Label htmlFor="select-all">Select all shown</Label>
+                    </div>
+                  </div>
                 </div>
                 <div className="rounded-md border max-h-80 overflow-auto">
                   {unassigned.length === 0 ? (
@@ -90,9 +107,15 @@ const StudentAssignBulk: React.FC = () => {
                   ) : (
                     <ul className="divide-y">
                       {filtered.map((s) => (
-                        <li key={s.id} className="p-3">
-                          <p className="font-medium">{s.name}</p>
-                          <p className="text-sm text-muted-foreground">{s.email}</p>
+                        <li key={s.id} className="flex items-center justify-between p-3">
+                          <div>
+                            <p className="font-medium">{s.name}</p>
+                            <p className="text-sm text-muted-foreground">{s.email}</p>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Checkbox id={`sel-${s.id}`} checked={!!selected[s.id]} onCheckedChange={(v) => setSelected((prev) => ({ ...prev, [s.id]: Boolean(v) }))} />
+                            <Label htmlFor={`sel-${s.id}`}>Select</Label>
+                          </div>
                         </li>
                       ))}
                     </ul>
@@ -101,7 +124,7 @@ const StudentAssignBulk: React.FC = () => {
               </div>
 
               <div className="flex items-center gap-3">
-                <Button type="submit" disabled={!batchId || unassigned.length === 0}>Assign all unassigned</Button>
+                <Button type="submit" disabled={!batchId || selectedCount === 0}>Assign selected</Button>
                 <Button type="button" variant="outline" onClick={() => navigate(-1)}>Cancel</Button>
               </div>
             </form>
