@@ -68,7 +68,7 @@ const StudentAssign: React.FC = () => {
                   <SelectTrigger>
                     <SelectValue placeholder="Select a batch" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="z-50 bg-popover">
                     {batchOptions.map((b) => (
                       <SelectItem key={b.id} value={b.id}>{b.name}</SelectItem>
                     ))}

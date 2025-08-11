@@ -25,7 +25,8 @@ const StudentCreate: React.FC = () => {
 
   const onSave = (e: React.FormEvent) => {
     e.preventDefault();
-    create({ name: form.name, email: form.email, phone: form.phone || undefined, batchId: form.batchId || null });
+    const normalizedBatchId = form.batchId === "none" || form.batchId === "" ? null : form.batchId;
+    create({ name: form.name, email: form.email, phone: form.phone || undefined, batchId: normalizedBatchId });
     toast({ title: "Student created", description: `${form.name} has been added.` });
     navigate("/students");
   };
@@ -67,8 +68,8 @@ const StudentCreate: React.FC = () => {
                   <SelectTrigger>
                     <SelectValue placeholder="Select a batch (optional)" />
                   </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="">None</SelectItem>
+                  <SelectContent className="z-50 bg-popover">
+                    <SelectItem value="none">None</SelectItem>
                     {batchOptions.map((b) => (
                       <SelectItem key={b.id} value={b.id}>{b.name}</SelectItem>
                     ))}
