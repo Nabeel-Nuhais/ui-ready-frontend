@@ -5,10 +5,11 @@ import AppLayout from "@/components/layout/AppLayout";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
-import { Plus, Trash2, Link as LinkIcon } from "lucide-react";
+import { Plus, Trash2, Link as LinkIcon, Pencil, Users as UsersIcon } from "lucide-react";
 import { useStudents } from "@/hooks/use-students";
 import { useBatches } from "@/hooks/use-batches";
 import { toast } from "@/hooks/use-toast";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 const Students: React.FC = () => {
   const canonicalUrl = typeof window !== "undefined" ? `${window.location.origin}/students` : "/students";
@@ -41,9 +42,24 @@ const Students: React.FC = () => {
       <section className="space-y-4">
         <header className="flex items-center justify-between">
           <h1 className="text-2xl font-semibold tracking-tight">Students</h1>
-          <Button onClick={onCreate}>
-            <Plus className="mr-2 h-4 w-4" /> New Student
-          </Button>
+          <div className="flex items-center gap-2">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button onClick={onCreate} aria-label="New student">
+                  <Plus className="mr-2 h-4 w-4" /> New Student
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Add a new student</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant="outline" onClick={() => navigate("/students/assign-bulk")} aria-label="Bulk assign unassigned students">
+                  <UsersIcon className="mr-2 h-4 w-4" /> Assign Unassigned
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Assign all unassigned students to a batch</TooltipContent>
+            </Tooltip>
+          </div>
         </header>
 
         <div className="rounded-md border">
@@ -72,13 +88,31 @@ const Students: React.FC = () => {
                     <TableCell className="text-right space-x-2">
                       <div className="inline-flex items-center gap-2 justify-end">
                         {!s.batchId && (
-                          <Button variant="outline" size="sm" onClick={() => onAssign(s.id)} aria-label={`Assign batch to ${s.name}`}>
-                            <LinkIcon className="h-4 w-4" />
-                          </Button>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button variant="outline" size="sm" onClick={() => onAssign(s.id)} aria-label={`Assign batch to ${s.name}`}>
+                                <LinkIcon className="h-4 w-4" />
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>Assign batch</TooltipContent>
+                          </Tooltip>
                         )}
-                        <Button variant="destructive" size="sm" onClick={() => setPendingDeleteId(s.id)} aria-label={`Delete ${s.name}`}>
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button variant="outline" size="sm" onClick={() => navigate(`/students/edit?id=${s.id}`)} aria-label={`Edit ${s.name}`}>
+                              <Pencil className="h-4 w-4" />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>Edit student</TooltipContent>
+                        </Tooltip>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button variant="destructive" size="sm" onClick={() => setPendingDeleteId(s.id)} aria-label={`Delete ${s.name}`}>
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>Delete student</TooltipContent>
+                        </Tooltip>
                       </div>
                     </TableCell>
                   </TableRow>

@@ -30,6 +30,7 @@ const AttendanceMark: React.FC = () => {
 
   const [batchId, setBatchId] = useState(initialBatchId);
   const [date, setDate] = useState<Date | undefined>(initialDate ? new Date(initialDate) : undefined);
+  const [open, setOpen] = useState(false);
   const dateStr = useMemo(() => (date ? format(date, "yyyy-MM-dd") : ""), [date]);
 
   const batchOptions = useMemo(() => batches.map((b) => ({ id: b.id, name: b.name })), [batches]);
@@ -101,7 +102,7 @@ const AttendanceMark: React.FC = () => {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="date">Date</Label>
-                  <Popover>
+                  <Popover open={open} onOpenChange={setOpen}>
                     <PopoverTrigger asChild>
                       <Button
                         variant={"outline"}
@@ -118,8 +119,11 @@ const AttendanceMark: React.FC = () => {
                       <Calendar
                         mode="single"
                         selected={date}
-                        onSelect={setDate}
+                        onSelect={(d) => { setDate(d); setOpen(false); }}
                         disabled={(d) => d > new Date()}
+                        fromYear={2000}
+                        toYear={new Date().getFullYear()}
+                        captionLayout="dropdown"
                         initialFocus
                         className={cn("p-3 pointer-events-auto")}
                       />

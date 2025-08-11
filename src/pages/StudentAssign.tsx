@@ -38,7 +38,7 @@ const StudentAssign: React.FC = () => {
           <h1 className="text-2xl font-semibold tracking-tight mb-4">Assign Student</h1>
           <p className="text-muted-foreground">Student not found.</p>
           <div className="mt-4">
-            <Button variant="outline" onClick={() => navigate("/students")}>Back to Students</Button>
+            
           </div>
         </section>
       </AppLayout>
@@ -78,7 +78,7 @@ const StudentAssign: React.FC = () => {
               <div className="flex items-center gap-3">
                 <Button type="submit" disabled={!batchId}>Assign</Button>
                 <Button type="button" variant="outline" onClick={() => navigate(-1)}>Cancel</Button>
-                <Button type="button" variant="secondary" onClick={() => navigate("/students")}>Back to Students</Button>
+                
               </div>
             </form>
           </CardContent>

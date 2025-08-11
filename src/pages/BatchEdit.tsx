@@ -27,8 +27,10 @@ const BatchEdit: React.FC = () => {
     name: existing?.name ?? "",
     startDate: existing?.startDate ?? "",
     endDate: existing?.endDate ?? "",
-  });
+});
 
+const [openStart, setOpenStart] = useState(false);
+const [openEnd, setOpenEnd] = useState(false);
   const startDateObj = useMemo(() => (form.startDate ? new Date(form.startDate) : undefined), [form.startDate]);
   const endDateObj = useMemo(() => (form.endDate ? new Date(form.endDate) : undefined), [form.endDate]);
 
@@ -75,7 +77,7 @@ const BatchEdit: React.FC = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="startDate">Start date</Label>
-                  <Popover>
+                  <Popover open={openStart} onOpenChange={setOpenStart}>
                     <PopoverTrigger asChild>
                       <Button
                         variant={"outline"}
@@ -92,7 +94,10 @@ const BatchEdit: React.FC = () => {
                       <Calendar
                         mode="single"
                         selected={startDateObj}
-                        onSelect={(d) => setForm((f) => ({ ...f, startDate: d ? format(d, "yyyy-MM-dd") : "" }))}
+                        onSelect={(d) => { setForm((f) => ({ ...f, startDate: d ? format(d, "yyyy-MM-dd") : "" })); setOpenStart(false); }}
+                        fromYear={2000}
+                        toYear={new Date().getFullYear() + 5}
+                        captionLayout="dropdown"
                         initialFocus
                         className={cn("p-3 pointer-events-auto")}
                       />
@@ -101,7 +106,7 @@ const BatchEdit: React.FC = () => {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="endDate">End date</Label>
-                  <Popover>
+                  <Popover open={openEnd} onOpenChange={setOpenEnd}>
                     <PopoverTrigger asChild>
                       <Button
                         variant={"outline"}
@@ -118,7 +123,10 @@ const BatchEdit: React.FC = () => {
                       <Calendar
                         mode="single"
                         selected={endDateObj}
-                        onSelect={(d) => setForm((f) => ({ ...f, endDate: d ? format(d, "yyyy-MM-dd") : "" }))}
+                        onSelect={(d) => { setForm((f) => ({ ...f, endDate: d ? format(d, "yyyy-MM-dd") : "" })); setOpenEnd(false); }}
+                        fromYear={2000}
+                        toYear={new Date().getFullYear() + 5}
+                        captionLayout="dropdown"
                         initialFocus
                         className={cn("p-3 pointer-events-auto")}
                       />

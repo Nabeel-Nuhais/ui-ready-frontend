@@ -11,6 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 export default function Header() {
   const navigate = useNavigate();
@@ -22,7 +23,12 @@ export default function Header() {
 
   return (
     <header className="h-14 border-b bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60 flex items-center justify-between px-3">
-      <SidebarTrigger aria-label="Toggle sidebar" />
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <SidebarTrigger aria-label="Toggle sidebar" />
+        </TooltipTrigger>
+        <TooltipContent>Toggle sidebar (Ctrl/Cmd + B)</TooltipContent>
+      </Tooltip>
       <div className="flex items-center gap-2">
         <DropdownMenu>
           <DropdownMenuTrigger className="rounded-full focus:outline-none focus:ring-2 focus:ring-ring">
