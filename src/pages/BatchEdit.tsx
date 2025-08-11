@@ -51,8 +51,8 @@ const BatchEdit: React.FC = () => {
         <link rel="canonical" href={canonicalUrl} />
       </Helmet>
 
-      <section className="max-w-2xl">
-        <h1 className="text-2xl font-semibold tracking-tight mb-4">{isEditing ? "Edit Batch" : "Create Batch"}</h1>
+<section className="max-w-2xl">
+  <h1 className="text-2xl font-semibold tracking-tight mb-4">{isEditing ? "Edit Batch" : "Create Batch"}</h1>
         <Card>
           <CardHeader>
             <CardTitle>Batch details</CardTitle>

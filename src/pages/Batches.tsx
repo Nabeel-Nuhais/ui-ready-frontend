@@ -7,13 +7,15 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, } from "@/components/ui/alert-dialog";
 import { Pencil, Trash2, Plus } from "lucide-react";
 import { useBatches } from "@/hooks/use-batches";
+import { useStudents } from "@/hooks/use-students";
 import { toast } from "@/hooks/use-toast";
 
 const Batches: React.FC = () => {
   const canonicalUrl = typeof window !== "undefined" ? `${window.location.origin}/batches` : "/batches";
   const navigate = useNavigate();
-  const { batches, remove } = useBatches();
-  const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
+const { batches, remove } = useBatches();
+const { unassignByBatch } = useStudents();
+const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
 
   const sorted = useMemo(() => {
     return [...batches].sort((a, b) => a.name.localeCompare(b.name));
@@ -22,12 +24,13 @@ const Batches: React.FC = () => {
   const onEdit = (id: string) => navigate(`/batches/edit?id=${id}`);
   const onCreate = () => navigate(`/batches/edit`);
 
-  const onConfirmDelete = () => {
-    if (!pendingDeleteId) return;
-    remove(pendingDeleteId);
-    setPendingDeleteId(null);
-    toast({ title: "Batch deleted", description: "The batch was removed successfully." });
-  };
+const onConfirmDelete = () => {
+  if (!pendingDeleteId) return;
+  unassignByBatch(pendingDeleteId);
+  remove(pendingDeleteId);
+  setPendingDeleteId(null);
+  toast({ title: "Batch deleted", description: "The batch was removed and related students were unassigned." });
+};
 
   return (
     <AppLayout>
