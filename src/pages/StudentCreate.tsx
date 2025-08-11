@@ -79,6 +79,7 @@ const StudentCreate: React.FC = () => {
               <div className="flex items-center gap-3">
                 <Button type="submit">Save</Button>
                 <Button type="button" variant="outline" onClick={() => navigate(-1)}>Cancel</Button>
+                <Button type="button" variant="secondary" onClick={() => navigate("/students")}>Back to Students</Button>
               </div>
             </form>
           </CardContent>

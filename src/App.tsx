@@ -13,6 +13,9 @@ import BatchEdit from "./pages/BatchEdit";
 import Students from "./pages/Students";
 import StudentCreate from "./pages/StudentCreate";
 import StudentAssign from "./pages/StudentAssign";
+import Attendance from "./pages/Attendance";
+import AttendanceMark from "./pages/AttendanceMark";
+import AttendanceView from "./pages/AttendanceView";
 
 const queryClient = new QueryClient();
 
@@ -32,6 +35,10 @@ const App = () => (
 <Route path="/students" element={<Students />} />
 <Route path="/students/create" element={<StudentCreate />} />
 <Route path="/students/assign" element={<StudentAssign />} />
+{/* Attendance routes */}
+<Route path="/attendance" element={<Attendance />} />
+<Route path="/attendance/mark" element={<AttendanceMark />} />
+<Route path="/attendance/view" element={<AttendanceView />} />
 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
 <Route path="*" element={<NotFound />} />
           </Routes>

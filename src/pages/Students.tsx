@@ -70,12 +70,16 @@ const Students: React.FC = () => {
                     <TableCell>{s.phone || "-"}</TableCell>
                     <TableCell>{s.batchId ? batchMap.get(s.batchId) || "(removed)" : "Not assigned"}</TableCell>
                     <TableCell className="text-right space-x-2">
-                      <Button variant="outline" size="sm" onClick={() => onAssign(s.id)} aria-label={`Assign batch to ${s.name}`}>
-                        <LinkIcon className="h-4 w-4" />
-                      </Button>
-                      <Button variant="destructive" size="sm" onClick={() => setPendingDeleteId(s.id)} aria-label={`Delete ${s.name}`}>
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
+                      <div className="inline-flex items-center gap-2 justify-end">
+                        {!s.batchId && (
+                          <Button variant="outline" size="sm" onClick={() => onAssign(s.id)} aria-label={`Assign batch to ${s.name}`}>
+                            <LinkIcon className="h-4 w-4" />
+                          </Button>
+                        )}
+                        <Button variant="destructive" size="sm" onClick={() => setPendingDeleteId(s.id)} aria-label={`Delete ${s.name}`}>
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))
